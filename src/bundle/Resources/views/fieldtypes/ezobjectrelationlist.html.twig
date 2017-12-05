@@ -1,0 +1,42 @@
+{% block ezplatform_fieldtype_ezobjectrelationlist_widget %}
+    <div class="ez-table-header">
+        <h5>Sections</h5>
+        <div class="ez-table__actions">
+            <button class="ez-table__action--create">
+                <svg class="ez-icon">
+                    <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#create"></use>
+                </svg>
+            </button>
+            <button class="ez-table__action--remove">
+                <svg class="ez-icon">
+                    <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#trash"></use>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Content Type</th>
+                <th>Created</th>
+                <th>Order</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><input type="checkbox" /></td>
+                <td>Stars</td>
+                <td>Article</td>
+                <td>5.12.2017, 12:10:43</td>
+                <td><input type="number" value="0" /></td>
+            </tr>
+            <tr>
+                <td colspan="5">No content selected</td>
+            </tr>
+        </tbody>
+    </table>
+    {{ block('form_widget') }}
+{% endblock %}
