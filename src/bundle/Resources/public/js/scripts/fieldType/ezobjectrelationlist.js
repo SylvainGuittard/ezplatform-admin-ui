@@ -56,6 +56,11 @@
             closeUDW();
         };
         const onCancel = () => closeUDW();
+        const canSelectContent = (item, callback) => {
+            const canSelect = !selectedItems.find(selectedItem => selectedItem.id === item.id);
+
+            callback(canSelect);
+        };
         const openUDW = (event) => {
             event.preventDefault();
 
@@ -66,7 +71,8 @@
                 title: 'Select content',
                 multiple: true,
                 selectedItemsLimit: 3,
-                restInfo: { token, siteaccess }
+                restInfo: { token, siteaccess },
+                canSelectContent
             }), udwContainer);
         };
         const excludeDuplicatedItems = (items) => {
