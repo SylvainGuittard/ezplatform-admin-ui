@@ -1,6 +1,7 @@
 {% block ezplatform_fieldtype_ezobjectrelationlist_widget %}
+    {% set limit = form.parent.vars.value.fieldDefinition.fieldSettings.selectionLimit %}
     <div class="ez-table-header">
-        <h5>Sections</h5>
+        <h5>{{ 'ezobjectrelationlist.relations'|trans|desc('Relations') }}: <small>{{ 'ezobjectrelationlist.limit'|trans({'%limit%': limit})|desc('Limit %limit% max') }}</small></h5>
         <div class="ez-table__actions">
             <button class="ez-table__action--create">
                 <svg class="ez-icon">
@@ -19,24 +20,28 @@
         <thead>
             <tr>
                 <th></th>
-                <th>Name</th>
-                <th>Content Type</th>
-                <th>Created</th>
-                <th>Order</th>
+                <th>{{ 'ezobjectrelationlist.table.row.name'|trans|desc('Name') }}</th>
+                <th>{{ 'ezobjectrelationlist.table.row.content_type'|trans|desc('Content Type') }}</th>
+                <th>{{ 'ezobjectrelationlist.table.row.created'|trans|desc('Created') }}</th>
+                <th>{{ 'ezobjectrelationlist.table.row.order'|trans|desc('Order') }}</th>
             </tr>
         </thead>
         <tbody class="ez-relations">
-            <tr class="ez-relations__item">
-                <td><input type="checkbox" /></td>
-                <td>Stars</td>
-                <td>Article</td>
-                <td>5.12.2017, 12:10:43</td>
-                <td><input type="number" value="0" /></td>
-            </tr>
-            <tr>
-                <td colspan="5">No content selected</td>
-            </tr>
+            {% for relation in relations if relations|length > 0 %}
+                <tr class="ez-relations__item">
+                    <td><input type="checkbox" /></td>
+                    <td>{{ relation.contentInfo.name }}</td>
+                    <td>{{ relation.contentType.name }}</td>
+                    <td>{{ relation.contentInfo.publishedDate|localizeddate('short', 'medium') }}</td>
+                    <td><input type="number" value="0" /></td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">{{ 'ezobjectrelationlist.table.no_content_selected'|trans|desc('No content selected') }}</td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
+    {% set attr = attr|merge({'hidden': 'hidden'}) %}
     {{ block('form_widget') }}
 {% endblock %}
