@@ -44,7 +44,9 @@
         const token = document.querySelector('meta[name="CSRF-Token"]').content;
         const siteaccess = document.querySelector('meta[name="SiteAccess"]').content;
         const sourceInput = fieldContainer.querySelector(SELECTOR_INPUT);
-        const relationsContainer = fieldContainer.querySelector('.ez-relations');
+        const relationsContainer = fieldContainer.querySelector('.ez-relations__list');
+        const relationsWrapper = fieldContainer.querySelector('.ez-relations__wrapper');
+        const relationsCTA = fieldContainer.querySelector('.ez-relations__cta');
         const closeUDW = () => udwContainer.innerHTML = '';
         const updateInputValue = (items) => sourceInput.value = items.map(item => item.id).join();
         const onConfirm = (items) => {
@@ -54,6 +56,9 @@
             updateInputValue(selectedItems);
             renderRows(items);
             closeUDW();
+
+            relationsWrapper.removeAttribute('hidden');
+            relationsCTA.setAttribute('hidden', true);
         };
         const onCancel = () => closeUDW();
         const canSelectContent = (item, callback) => {
@@ -82,12 +87,12 @@
         };
         const renderRow = (item, index) => {
             return `
-                <tr class="ez-relations__item">
-                    <td><input type="checkbox" value="${item.id}"/></td>
+                <tr class="ez-relations__item" data-content-id="${item.id}">
+                    <td><input type="checkbox" value="${item.id}" /></td>
                     <td>${item.ContentInfo.Content.Name}</td>
                     <td>${item.ContentInfo.Content.ContentType._href}</td>
                     <td>${(new Date(item.ContentInfo.Content.publishedDate)).toLocaleString()}</td>
-                    <td><input type="number" value="${index}" /></td>
+                    <td><input class="ez-relations__order-input" type="number" value="${index + 1}" /></td>
                 </tr>
             `;
         };
@@ -95,7 +100,10 @@
         let selectedItems = [];
         let selectedItemsMap = {};
 
-        [...fieldContainer.querySelectorAll('.ez-table__action--create')].forEach(btn => btn.addEventListener('click', openUDW, false));
+        [
+            ...fieldContainer.querySelectorAll('.ez-relations__table-action--create'),
+            ...fieldContainer.querySelectorAll('.ez-relations__cta-btn')
+        ].forEach(btn => btn.addEventListener('click', openUDW, false));
 
         validator.init();
 
