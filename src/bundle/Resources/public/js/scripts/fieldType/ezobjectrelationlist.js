@@ -56,6 +56,7 @@
             items = excludeDuplicatedItems(items);
 
             renderRows(items);
+            attachRowsEventHandlers();
 
             selectedItems = [...selectedItems, ...items.map(item => item.id)];
 
@@ -95,7 +96,7 @@
                 <tr class="ez-relations__item" data-content-id="${item.id}">
                     <td><input type="checkbox" value="${item.id}" /></td>
                     <td>${item.ContentInfo.Content.Name}</td>
-                    <td>${item.ContentInfo.Content.ContentType._href}</td>
+                    <td>${item.ContentInfo.Content.ContentType.names.value[0]['#text']}</td>
                     <td>${(new Date(item.ContentInfo.Content.publishedDate)).toLocaleString()}</td>
                     <td><input class="ez-relations__order-input" type="number" value="${selectedItems.length + index + 1}" /></td>
                 </tr>
@@ -130,6 +131,12 @@
             updateInputValue(selectedItems);
             updateFieldState();
             updateAddBtnState();
+        };
+        const attachRowsEventHandlers = () => {
+            [...relationsContainer.querySelectorAll('')].forEach(item => item.addEventListener('blur', (event) => console.log(event), false));
+        };
+        const updateSelectedItemsOrder = (event) => {
+            event.preventDefault();
         };
         let selectedItems = [];
         let selectedItemsMap = {};
