@@ -85,6 +85,10 @@
             updateAddBtnState();
         };
         const canSelectContent = ({item, itemsCount}, callback) => {
+            if (!selectedItemsLimit) {
+                callback(true);
+            }
+
             const canSelect = (selectedItems.length + itemsCount) < selectedItemsLimit &&
                 !selectedItems.find(id => id === item.id);
 
