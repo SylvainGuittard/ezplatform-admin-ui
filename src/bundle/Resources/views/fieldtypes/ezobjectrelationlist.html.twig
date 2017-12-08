@@ -32,12 +32,12 @@
             </thead>
             <tbody class="ez-relations__list">
                 {% for relation in relations %}
-                    <tr class="ez-relations__item">
+                    <tr class="ez-relations__item" data-content-id="{{ relation.contentInfo.id }}">
                         <td><input type="checkbox" /></td>
                         <td>{{ relation.contentInfo.name }}</td>
                         <td>{{ relation.contentType.name }}</td>
                         <td>{{ relation.contentInfo.publishedDate|localizeddate('short', 'medium') }}</td>
-                        <td colspan="2"><input class="ez-relations__order-input" type="number" /></td>
+                        <td colspan="2"><input class="ez-relations__order-input" type="number" value="{{ loop.index }}" /></td>
                     </tr>
                 {% endfor %}
             </tbody>

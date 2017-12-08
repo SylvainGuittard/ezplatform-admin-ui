@@ -4,6 +4,8 @@
     const SELECTOR_FIELD_INPUT = `${SELECTOR_FIELD} ${SELECTOR_INPUT}`;
     const SELECTOR_LABEL_WRAPPER = '.ez-field-edit__label-wrapper';
     const SELECTOR_BTN_ADD = '.ez-relations__table-action--create';
+    const SELECTOR_ROW = '.ez-relations__item';
+    const EVENT_CUSTOM = 'validateInput';
 
     class EzObjectRelationListValidator extends global.eZ.BaseFieldValidator {
         /**
@@ -14,10 +16,22 @@
          * @returns {Object}
          * @memberof EzObjectRelationListValidator
          */
-        validateInput(event) {
-            console.log('TODO:validation');
+        validateInput({currentTarget}) {
+            const isRequired = currentTarget.required;
+            const isEmpty = !currentTarget.value.length;
+            const hasCorrectValues = currentTarget.value.split(',').every(id => !isNaN(parseInt(id, 10)));
+            const label = currentTarget.closest(SELECTOR_FIELD).querySelector('.ez-field-edit__label').innerHTML;
+            const result = { isError: false };
 
-            return {isError: false, event};
+            if (isRequired && isEmpty) {
+                result.isError = true;
+                result.errorMessage = global.eZ.errors.emptyField.replace('{fieldName}', label);
+            } else if (!isEmpty && !hasCorrectValues) {
+                result.isError = true;
+                result.errorMessage = global.eZ.errors.invalidValue.replace('{fieldName}', label);
+            }
+
+            return result;
         }
     }
 
@@ -35,7 +49,7 @@
                 {
                     isValueValidator: false,
                     selector: SELECTOR_FIELD_INPUT,
-                    eventName: 'validateInput',
+                    eventName: EVENT_CUSTOM,
                     callback: 'validateInput',
                     errorNodeSelectors: [SELECTOR_LABEL_WRAPPER]
                 }
@@ -49,9 +63,14 @@
         const relationsWrapper = fieldContainer.querySelector('.ez-relations__wrapper');
         const relationsCTA = fieldContainer.querySelector('.ez-relations__cta');
         const addBtn = fieldContainer.querySelector(SELECTOR_BTN_ADD)
-        const selectedItemsLimit = 6;
+        const selectedItemsLimit = 2;
         const closeUDW = () => udwContainer.innerHTML = '';
-        const updateInputValue = (items) => sourceInput.value = items.join();
+        const onCancel = () => closeUDW();
+        const renderRows = (items) => items.forEach((...args) => relationsContainer.insertAdjacentHTML('beforeend', renderRow(...args)));
+        const updateInputValue = (items) => {
+            sourceInput.value = items.join();
+            sourceInput.dispatchEvent(new CustomEvent(EVENT_CUSTOM));
+        };
         const onConfirm = (items) => {
             items = excludeDuplicatedItems(items);
 
@@ -65,9 +84,8 @@
             updateFieldState();
             updateAddBtnState();
         };
-        const onCancel = () => closeUDW();
-        const canSelectContent = (item, callback) => {
-            const canSelect = selectedItems.length < selectedItemsLimit &&
+        const canSelectContent = ({item, itemsCount}, callback) => {
+            const canSelect = (selectedItems.length + itemsCount) < selectedItemsLimit &&
                 !selectedItems.find(id => id === item.id);
 
             callback(canSelect);
@@ -94,7 +112,7 @@
         const renderRow = (item, index) => {
             return `
                 <tr class="ez-relations__item" data-content-id="${item.id}">
-                    <td><input type="checkbox" value="${item.id}" /></td>
+                    <td><input type="checkbox" /></td>
                     <td>${item.ContentInfo.Content.Name}</td>
                     <td>${item.ContentInfo.Content.ContentType.names.value[0]['#text']}</td>
                     <td>${(new Date(item.ContentInfo.Content.publishedDate)).toLocaleString()}</td>
@@ -102,7 +120,6 @@
                 </tr>
             `;
         };
-        const renderRows = (items) => items.forEach((...args) => relationsContainer.insertAdjacentHTML('beforeend', renderRow(...args)));
         const updateFieldState = () => {
             const wrapperMethod = selectedItems.length ? 'removeAttribute' : 'setAttribute';
             const ctaMethod = selectedItems.length ? 'setAttribute' : 'removeAttribute';
@@ -151,7 +168,7 @@
             const inputs = findOrderInputs().reduce((total, input) => {
                 return [...total, {
                     order: parseInt(input.value, 10),
-                    row: input.closest('.ez-relations__item')
+                    row: input.closest(SELECTOR_ROW)
                 }];
             }, []);
 
@@ -167,11 +184,13 @@
             relationsContainer.appendChild(fragment);
             attachRowsEventHandlers();
 
-            selectedItems = inputs.map(item => item.row.dataset.contentId);
+            selectedItems = inputs.map(item => parseInt(item.row.dataset.contentId, 10));
             updateInputValue(selectedItems);
         };
-        let selectedItems = [];
-        let selectedItemsMap = {};
+        let selectedItems = [...fieldContainer.querySelectorAll(SELECTOR_ROW)].map(row => parseInt(row.dataset.contentId, 10));
+        let selectedItemsMap = selectedItems.reduce((total, item) => Object.assign({}, total, { [item]: item }), {});
+
+        updateAddBtnState();
 
         [
             ...fieldContainer.querySelectorAll(SELECTOR_BTN_ADD),
