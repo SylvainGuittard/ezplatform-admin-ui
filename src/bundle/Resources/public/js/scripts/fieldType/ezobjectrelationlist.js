@@ -1,7 +1,6 @@
 (function (global, React, ReactDOM) {
     const SELECTOR_FIELD = '.ez-field-edit--ezobjectrelationlist';
     const SELECTOR_INPUT = '.ez-data-source__input';
-    const SELECTOR_FIELD_INPUT = `${SELECTOR_FIELD} ${SELECTOR_INPUT}`;
     const SELECTOR_LABEL_WRAPPER = '.ez-field-edit__label-wrapper';
     const SELECTOR_BTN_ADD = '.ez-relations__table-action--create';
     const SELECTOR_ROW = '.ez-relations__item';
@@ -41,14 +40,14 @@
             fieldContainer,
             eventsMap: [
                 {
-                    selector: SELECTOR_FIELD_INPUT,
+                    selector: SELECTOR_INPUT,
                     eventName: 'blur',
                     callback: 'validateInput',
                     errorNodeSelectors: [SELECTOR_LABEL_WRAPPER]
                 },
                 {
                     isValueValidator: false,
-                    selector: SELECTOR_FIELD_INPUT,
+                    selector: SELECTOR_INPUT,
                     eventName: EVENT_CUSTOM,
                     callback: 'validateInput',
                     errorNodeSelectors: [SELECTOR_LABEL_WRAPPER]
