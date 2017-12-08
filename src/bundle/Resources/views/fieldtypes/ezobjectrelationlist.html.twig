@@ -5,5 +5,6 @@
 {% block ezplatform_fieldtype_ezobjectrelationlist_widget %}
     {% set limit = form.parent.vars.value.fieldDefinition.fieldSettings.selectionLimit %}
     {% set default_location = form.parent.vars.value.fieldDefinition.fieldSettings.selectionDefaultLocation %}
+    {% set allowed_content_type_identifiers = form.parent.vars.value.fieldDefinition.fieldSettings.selectionContentTypes %}
     {{ block('ezobjectrelation_base_widget') }}
 {% endblock %}
