@@ -62,8 +62,8 @@
         const relationsContainer = fieldContainer.querySelector('.ez-relations__list');
         const relationsWrapper = fieldContainer.querySelector('.ez-relations__wrapper');
         const relationsCTA = fieldContainer.querySelector('.ez-relations__cta');
-        const addBtn = fieldContainer.querySelector(SELECTOR_BTN_ADD)
-        const selectedItemsLimit = 2;
+        const addBtn = fieldContainer.querySelector(SELECTOR_BTN_ADD);
+        const selectedItemsLimit = parseInt(relationsContainer.dataset.limit, 10);
         const closeUDW = () => udwContainer.innerHTML = '';
         const onCancel = () => closeUDW();
         const renderRows = (items) => items.forEach((...args) => relationsContainer.insertAdjacentHTML('beforeend', renderRow(...args)));

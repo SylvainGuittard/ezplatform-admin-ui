@@ -30,7 +30,7 @@
                     <th></th>
                 </tr>
             </thead>
-            <tbody class="ez-relations__list">
+            <tbody class="ez-relations__list" data-limit="{{ limit }}">
                 {% for relation in relations %}
                     <tr class="ez-relations__item" data-content-id="{{ relation.contentInfo.id }}">
                         <td><input type="checkbox" /></td>
@@ -44,12 +44,16 @@
         </table>
     </div>
     <div class="ez-relations__cta" {% if has_relations %}hidden="true"{% endif %}>
-        <p class="ez-relations__cta-text">Set up multiple relations with up to {{ limit }} content items</p>
+        <p class="ez-relations__cta-text">
+            {{ 'ezobjectrelationlist.cta.limit'|trans({'%limit%': limit})|desc('Set up multiple relations with up to %limit% content items') }}
+        </p>
         <button class="ez-relations__cta-btn btn btn-primary">
             <svg class="ez-icon">
                 <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#relations"></use>
             </svg>
-            <span class="ez-relations__cta-btn-label">Select content</span>
+            <span class="ez-relations__cta-btn-label">
+                {{ 'ezobjectrelationlist.cta.select'|trans|desc('Select content') }}
+            </span>
         </button>
     </div>
     {% set attr = attr|merge({'hidden': 'hidden'}) %}
