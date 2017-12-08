@@ -132,11 +132,43 @@
             updateFieldState();
             updateAddBtnState();
         };
+        const findOrderInputs = () => {
+            return [...relationsContainer.querySelectorAll('.ez-relations__order-input')];
+        };
         const attachRowsEventHandlers = () => {
-            [...relationsContainer.querySelectorAll('')].forEach(item => item.addEventListener('blur', (event) => console.log(event), false));
+            findOrderInputs().forEach(item => {
+                item.addEventListener('blur', updateSelectedItemsOrder, false);
+            });
+        };
+        const emptyRelationsContainer = () => {
+            while (relationsContainer.lastChild) {
+                relationsContainer.removeChild(relationsContainer.lastChild);
+            }
         };
         const updateSelectedItemsOrder = (event) => {
             event.preventDefault();
+
+            const inputs = findOrderInputs().reduce((total, input) => {
+                return [...total, {
+                    order: parseInt(input.value, 10),
+                    row: input.closest('.ez-relations__item')
+                }];
+            }, []);
+
+            inputs.sort((a, b) => a.order - b.order);
+
+            const fragment = inputs.reduce((frag, item) => {
+                frag.appendChild(item.row);
+
+                return frag;
+            }, document.createDocumentFragment());
+
+            emptyRelationsContainer();
+            relationsContainer.appendChild(fragment);
+            attachRowsEventHandlers();
+
+            selectedItems = inputs.map(item => item.row.dataset.contentId);
+            updateInputValue(selectedItems);
         };
         let selectedItems = [];
         let selectedItemsMap = {};
