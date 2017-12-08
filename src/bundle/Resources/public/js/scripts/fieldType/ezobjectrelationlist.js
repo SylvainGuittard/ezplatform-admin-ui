@@ -64,7 +64,6 @@
         const addBtn = fieldContainer.querySelector(SELECTOR_BTN_ADD);
         const selectedItemsLimit = parseInt(relationsContainer.dataset.limit, 10);
         const closeUDW = () => udwContainer.innerHTML = '';
-        const onCancel = () => closeUDW();
         const renderRows = (items) => items.forEach((...args) => relationsContainer.insertAdjacentHTML('beforeend', renderRow(...args)));
         const updateInputValue = (items) => {
             sourceInput.value = items.join();
@@ -98,10 +97,10 @@
 
             ReactDOM.render(React.createElement(global.eZ.modules.UniversalDiscovery, {
                 onConfirm,
-                onCancel,
+                onCancel: closeUDW,
                 confirmLabel: 'Confirm selection',
                 title: 'Select content',
-                multiple: true,
+                multiple: selectedItemsLimit !== 1,
                 selectedItemsLimit,
                 restInfo: { token, siteaccess },
                 canSelectContent
